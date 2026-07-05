@@ -40,6 +40,28 @@ public final class Tag {
   public static final Tag STR = new Tag(PREFIX + "str");
   public static final Tag SEQ = new Tag(PREFIX + "seq");
   public static final Tag MAP = new Tag(PREFIX + "map");
+
+  // The language-independent tags defined by https://yaml.org/type/index.html — anything else
+  // under the yaml.org global prefix is a custom global tag (CVE-2022-1471).
+  private static final Set<Tag> STANDARD_TAGS = new HashSet<Tag>();
+
+  static {
+    STANDARD_TAGS.add(YAML);
+    STANDARD_TAGS.add(MERGE);
+    STANDARD_TAGS.add(SET);
+    STANDARD_TAGS.add(PAIRS);
+    STANDARD_TAGS.add(OMAP);
+    STANDARD_TAGS.add(BINARY);
+    STANDARD_TAGS.add(INT);
+    STANDARD_TAGS.add(FLOAT);
+    STANDARD_TAGS.add(TIMESTAMP);
+    STANDARD_TAGS.add(BOOL);
+    STANDARD_TAGS.add(NULL);
+    STANDARD_TAGS.add(STR);
+    STANDARD_TAGS.add(SEQ);
+    STANDARD_TAGS.add(MAP);
+  }
+
   // For use to indicate a DUMMY node that contains comments, when there is no other (empty
   // document)
   public static final Tag COMMENT = new Tag(PREFIX + "comment");
@@ -157,6 +179,17 @@ public final class Tag {
    */
   public boolean matches(Class<? extends Object> clazz) {
     return value.equals(Tag.PREFIX + clazz.getName());
+  }
+
+  /**
+   * Check whether this is a global tag under the yaml.org prefix that is not one of the standard
+   * language-independent tags — i.e. a tag that resolves to an arbitrary Java class and must be
+   * verified before construction to avoid remote code execution (CVE-2022-1471).
+   *
+   * @return true when this is a non-standard global tag
+   */
+  public boolean isCustomGlobal() {
+    return !secondary && !STANDARD_TAGS.contains(this);
   }
 
 }
