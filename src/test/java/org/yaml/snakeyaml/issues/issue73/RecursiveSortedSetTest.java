@@ -22,6 +22,7 @@ import java.util.TreeSet;
 
 import junit.framework.TestCase;
 
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Util;
 import org.yaml.snakeyaml.Yaml;
 
@@ -58,7 +59,9 @@ public class RecursiveSortedSetTest extends TestCase {
     public void testLoadRecursiveTest() {
         String doc = Util.getLocalResource("issues/issue73-recursive9.txt");
         // System.out.println(doc);
-        Yaml yaml = new Yaml();
+        LoaderOptions options = new LoaderOptions();
+        options.setAllowRecursiveKeys(true);
+        Yaml yaml = new Yaml(options);
         Bean11 obj = (Bean11) yaml.load(doc);
         Set<Object> set = obj.getSet();
         // System.out.println(set);

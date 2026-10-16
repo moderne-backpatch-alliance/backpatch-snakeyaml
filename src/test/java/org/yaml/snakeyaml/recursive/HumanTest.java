@@ -140,7 +140,9 @@ public class HumanTest extends TestCase {
         assertEquals(etalon, output);
         TypeDescription humanDescription = new TypeDescription(Human.class);
         humanDescription.putMapPropertyType("children", Human.class, Object.class);
-        Yaml beanLoader = new Yaml(new Constructor(humanDescription));
+        LoaderOptions loaderOptions = new LoaderOptions();
+        loaderOptions.setAllowRecursiveKeys(true);
+        Yaml beanLoader = new Yaml(new Constructor(humanDescription, loaderOptions));
         //
         Human son2 = beanLoader.loadAs(output, Human.class);
         assertNotNull(son2);
@@ -213,7 +215,9 @@ public class HumanTest extends TestCase {
         assertEquals(etalon, output);
         TypeDescription humanDescription = new TypeDescription(Human.class);
         humanDescription.putMapPropertyType("children", Human.class, Object.class);
-        Yaml beanLoader = new Yaml(new Constructor(humanDescription));
+        LoaderOptions loaderOptions = new LoaderOptions();
+        loaderOptions.setAllowRecursiveKeys(true);
+        Yaml beanLoader = new Yaml(new Constructor(humanDescription, loaderOptions));
         //
         Human son2 = beanLoader.loadAs(output, Human.class);
         assertNotNull(son2);
@@ -637,7 +641,9 @@ public class HumanTest extends TestCase {
         assertEquals(etalon, output);
         TypeDescription humanDescription = new TypeDescription(Human.class);
         humanDescription.putMapPropertyType("children", Human.class, Object.class);
-        Yaml beanLoader = new Yaml(new Constructor(humanDescription));
+        LoaderOptions loaderOptions = new LoaderOptions();
+        loaderOptions.setAllowRecursiveKeys(true);
+        Yaml beanLoader = new Yaml(new Constructor(humanDescription, loaderOptions));
         //
         Human son2 = beanLoader.loadAs(output, Human.class);
         assertNotNull(son2);
