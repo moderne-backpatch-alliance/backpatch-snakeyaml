@@ -20,6 +20,7 @@ public class LoaderOptions {
     private boolean allowDuplicateKeys = true;
     private int maxAliasesForCollections = 50; //to prevent YAML at https://en.wikipedia.org/wiki/Billion_laughs_attack
     private boolean allowRecursiveKeys;
+    private int nestingDepthLimit = 50;
 
     public boolean isAllowDuplicateKeys() {
         return allowDuplicateKeys;
@@ -58,5 +59,19 @@ public class LoaderOptions {
 
     public boolean getAllowRecursiveKeys() {
         return allowRecursiveKeys;
+    }
+
+    public int getNestingDepthLimit() {
+        return nestingDepthLimit;
+    }
+
+    /**
+     * Set max depth of nested collections. When the limit is exceeded an exception is thrown.
+     * Aliases/Anchors are not counted.
+     * This is to prevent a DoS attack
+     * @param nestingDepthLimit - depth to be accepted (50 by default)
+     */
+    public void setNestingDepthLimit(int nestingDepthLimit) {
+        this.nestingDepthLimit = nestingDepthLimit;
     }
 }
