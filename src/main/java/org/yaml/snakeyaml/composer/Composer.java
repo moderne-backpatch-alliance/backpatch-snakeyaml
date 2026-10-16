@@ -55,6 +55,9 @@ public class Composer {
     private final Set<Node> recursiveNodes;
     private int nonScalarAliasesCount = 0;
     private final LoaderOptions loadingConfig;
+    // keep the nesting of collections inside other collections
+    private int nestingDepth = 0;
+    private final int nestingDepthLimit;
 
     public Composer(Parser parser, Resolver resolver) {
         this(parser, resolver, new LoaderOptions());
@@ -66,6 +69,7 @@ public class Composer {
         this.anchors = new HashMap<String, Node>();
         this.recursiveNodes = new HashSet<Node>();
         this.loadingConfig = loadingConfig;
+        nestingDepthLimit = loadingConfig.getNestingDepthLimit();
     }
 
     /**
@@ -153,6 +157,7 @@ public class Composer {
         } else {
             NodeEvent event = (NodeEvent) parser.peekEvent();
             String anchor = event.getAnchor();
+            increaseNestingDepth();
             // the check for duplicate anchors has been removed (issue 174)
             if (parser.checkEvent(Event.ID.Scalar)) {
                 node = composeScalarNode(anchor);
@@ -161,6 +166,7 @@ public class Composer {
             } else {
                 node = composeMappingNode(anchor);
             }
+            decreaseNestingDepth();
         }
         recursiveNodes.remove(parent);
         return node;
@@ -276,5 +282,26 @@ public class Composer {
      */
     private static boolean globalTagsAllowed() {
         return Boolean.getBoolean("org.yaml.snakeyaml.allowGlobalTags");
+    }
+
+    /**
+     * Increase nesting depth and fail when it exceeds the denied limit
+     */
+    private void increaseNestingDepth() {
+        if (nestingDepth > nestingDepthLimit) {
+            throw new YAMLException("Nesting Depth exceeded max " + nestingDepthLimit);
+        }
+        nestingDepth++;
+    }
+
+    /**
+     * Indicate that the collection is finished and the nesting is decreased
+     */
+    private void decreaseNestingDepth() {
+        if (nestingDepth > 0) {
+            nestingDepth--;
+        } else {
+            throw new YAMLException("Nesting Depth cannot be negative");
+        }
     }
 }
