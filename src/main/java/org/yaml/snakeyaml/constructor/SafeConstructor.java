@@ -31,6 +31,7 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 import org.yaml.snakeyaml.nodes.MappingNode;
@@ -49,6 +50,11 @@ public class SafeConstructor extends BaseConstructor {
     public static final ConstructUndefined undefinedConstructor = new ConstructUndefined();
 
     public SafeConstructor() {
+    	this(new LoaderOptions());
+    }
+
+    public SafeConstructor(LoaderOptions loadingConfig) {
+        super(loadingConfig);
         this.yamlConstructors.put(Tag.NULL, new ConstructYamlNull());
         this.yamlConstructors.put(Tag.BOOL, new ConstructYamlBool());
         this.yamlConstructors.put(Tag.INT, new ConstructYamlInt());
