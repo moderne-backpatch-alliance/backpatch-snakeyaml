@@ -169,6 +169,10 @@ public class Composer {
             resolved = true;
         } else {
             nodeTag = new Tag(tag);
+            if (nodeTag.isCustomGlobal() && !globalTagsAllowed()) {
+                throw new ComposerException(null, null, "Global tag is not allowed: " + tag,
+                        ev.getStartMark());
+            }
         }
         Node node = new ScalarNode(nodeTag, resolved, ev.getValue(), ev.getStartMark(),
                 ev.getEndMark(), ev.getStyle());
@@ -188,6 +192,10 @@ public class Composer {
             resolved = true;
         } else {
             nodeTag = new Tag(tag);
+            if (nodeTag.isCustomGlobal() && !globalTagsAllowed()) {
+                throw new ComposerException(null, null, "Global tag is not allowed: " + tag,
+                        startEvent.getStartMark());
+            }
         }
         final ArrayList<Node> children = new ArrayList<Node>();
         SequenceNode node = new SequenceNode(nodeTag, resolved, children,
@@ -213,6 +221,10 @@ public class Composer {
             resolved = true;
         } else {
             nodeTag = new Tag(tag);
+            if (nodeTag.isCustomGlobal() && !globalTagsAllowed()) {
+                throw new ComposerException(null, null, "Global tag is not allowed: " + tag,
+                        startEvent.getStartMark());
+            }
         }
 
         final List<NodeTuple> children = new ArrayList<NodeTuple>();
@@ -232,5 +244,14 @@ public class Composer {
         Event endEvent = parser.getEvent();
         node.setEndMark(endEvent.getEndMark());
         return node;
+    }
+
+    /**
+     * CVE-2022-1471: custom global tags resolve to arbitrary Java classes, so they are rejected by
+     * default. Read the escape-hatch property on every check (not cached) so a caller that
+     * legitimately relies on global tags can opt back in at runtime.
+     */
+    private static boolean globalTagsAllowed() {
+        return Boolean.getBoolean("org.yaml.snakeyaml.allowGlobalTags");
     }
 }
