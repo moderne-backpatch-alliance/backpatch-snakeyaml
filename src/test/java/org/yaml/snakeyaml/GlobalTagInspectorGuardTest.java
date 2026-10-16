@@ -23,6 +23,8 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.yaml.snakeyaml.composer.ComposerException;
 
@@ -38,6 +40,25 @@ import org.yaml.snakeyaml.composer.ComposerException;
 public class GlobalTagInspectorGuardTest {
 
   private static final String ALLOW_PROPERTY = "org.yaml.snakeyaml.allowGlobalTags";
+
+  private String savedAllowProperty;
+
+  // The suite may run with -Dorg.yaml.snakeyaml.allowGlobalTags=true for the whole JVM: these tests
+  // need the property unset, and later tests need the JVM's value back exactly.
+  @Before
+  public void clearAllowProperty() {
+    savedAllowProperty = System.getProperty(ALLOW_PROPERTY);
+    System.clearProperty(ALLOW_PROPERTY);
+  }
+
+  @After
+  public void restoreAllowProperty() {
+    if (savedAllowProperty == null) {
+      System.clearProperty(ALLOW_PROPERTY);
+    } else {
+      System.setProperty(ALLOW_PROPERTY, savedAllowProperty);
+    }
+  }
 
   public static class LegacyBean {
 
@@ -81,14 +102,10 @@ public class GlobalTagInspectorGuardTest {
   @Test
   public void allowGlobalTagsPropertyRestoresLegacyBehavior() {
     System.setProperty(ALLOW_PROPERTY, "true");
-    try {
-      Object loaded = new Yaml()
-          .load("!!org.yaml.snakeyaml.GlobalTagInspectorGuardTest$LegacyBean {name: ok}");
-      assertNotNull(loaded);
-      assertTrue("expected a LegacyBean, got: " + loaded.getClass(), loaded instanceof LegacyBean);
-      assertEquals("ok", ((LegacyBean) loaded).getName());
-    } finally {
-      System.clearProperty(ALLOW_PROPERTY);
-    }
+    Object loaded = new Yaml()
+        .load("!!org.yaml.snakeyaml.GlobalTagInspectorGuardTest$LegacyBean {name: ok}");
+    assertNotNull(loaded);
+    assertTrue("expected a LegacyBean, got: " + loaded.getClass(), loaded instanceof LegacyBean);
+    assertEquals("ok", ((LegacyBean) loaded).getName());
   }
 }
