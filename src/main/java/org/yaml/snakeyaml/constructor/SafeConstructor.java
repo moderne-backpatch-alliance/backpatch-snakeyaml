@@ -74,6 +74,15 @@ public class SafeConstructor extends BaseConstructor {
     }
 
     protected void flattenMapping(MappingNode node) {
+        // before mergeNode and BaseConstructor, which hash each constructed key
+        for (NodeTuple tuple : node.getValue()) {
+            Node keyNode = tuple.getKeyNode();
+            if (!keyNode.getTag().equals(Tag.MERGE) && keyNode.isTwoStepsConstruction()
+                    && !loadingConfig.getAllowRecursiveKeys()) {
+                throw new YAMLException(
+                        "Recursive key for mapping is detected but it is not configured to be allowed.");
+            }
+        }
         // perform merging only on nodes containing merge node(s)
         if (node.isMerged()) {
             node.setValue(mergeNode(node, true, new HashMap<Object, Integer>(),
