@@ -67,7 +67,7 @@ public class Yaml {
     }
 
     public Yaml(LoaderOptions loaderOptions) {
-        this(new Constructor(), loaderOptions, new Representer(), new DumperOptions(),
+        this(new Constructor(loaderOptions), loaderOptions, new Representer(), new DumperOptions(),
                 new Resolver());
     }
 
@@ -475,7 +475,7 @@ public class Yaml {
     }
 
     private Object loadFromReader(StreamReader sreader, Class<?> type) {
-        Composer composer = new Composer(new ParserImpl(sreader), resolver);
+        Composer composer = new Composer(new ParserImpl(sreader), resolver, loaderOptions);
         constructor.setComposer(composer);
         return constructor.getSingleData(type);
     }
@@ -490,7 +490,7 @@ public class Yaml {
      *         sequence
      */
     public Iterable<Object> loadAll(Reader yaml) {
-        Composer composer = new Composer(new ParserImpl(new StreamReader(yaml)), resolver);
+        Composer composer = new Composer(new ParserImpl(new StreamReader(yaml)), resolver, loaderOptions);
         constructor.setComposer(composer);
         Iterator<Object> result = new Iterator<Object>() {
             public boolean hasNext() {
@@ -558,7 +558,7 @@ public class Yaml {
      * @return parsed root Node for the specified YAML document
      */
     public Node compose(Reader yaml) {
-        Composer composer = new Composer(new ParserImpl(new StreamReader(yaml)), resolver);
+        Composer composer = new Composer(new ParserImpl(new StreamReader(yaml)), resolver, loaderOptions);
         constructor.setComposer(composer);
         return composer.getSingleNode();
     }
@@ -573,7 +573,7 @@ public class Yaml {
      * @return parsed root Nodes for all the specified YAML documents
      */
     public Iterable<Node> composeAll(Reader yaml) {
-        final Composer composer = new Composer(new ParserImpl(new StreamReader(yaml)), resolver);
+        final Composer composer = new Composer(new ParserImpl(new StreamReader(yaml)), resolver, loaderOptions);
         constructor.setComposer(composer);
         Iterator<Node> result = new Iterator<Node>() {
             public boolean hasNext() {

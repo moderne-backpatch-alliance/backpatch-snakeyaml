@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.yaml.snakeyaml.LoaderOptions;
+import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.events.AliasEvent;
 import org.yaml.snakeyaml.events.Event;
 import org.yaml.snakeyaml.events.MappingStartEvent;
@@ -51,12 +53,19 @@ public class Composer {
     private final Resolver resolver;
     private final Map<String, Node> anchors;
     private final Set<Node> recursiveNodes;
+    private int nonScalarAliasesCount = 0;
+    private final LoaderOptions loadingConfig;
 
     public Composer(Parser parser, Resolver resolver) {
+        this(parser, resolver, new LoaderOptions());
+    }
+
+    public Composer(Parser parser, Resolver resolver, LoaderOptions loadingConfig) {
         this.parser = parser;
         this.resolver = resolver;
         this.anchors = new HashMap<String, Node>();
         this.recursiveNodes = new HashSet<Node>();
+        this.loadingConfig = loadingConfig;
     }
 
     /**
@@ -130,6 +139,7 @@ public class Composer {
 
     private Node composeNode(Node parent, Object index) {
         recursiveNodes.add(parent);
+        Node node = null;
         if (parser.checkEvent(Event.ID.Alias)) {
             AliasEvent event = (AliasEvent) parser.getEvent();
             String anchor = event.getAnchor();
@@ -137,27 +147,32 @@ public class Composer {
                 throw new ComposerException(null, null, "found undefined alias " + anchor,
                         event.getStartMark());
             }
-            Node result = anchors.get(anchor);
-            if (recursiveNodes.remove(result)) {
-                result.setTwoStepsConstruction(true);
+            node = anchors.get(anchor);
+            if (!(node instanceof ScalarNode)) {
+                this.nonScalarAliasesCount++;
+                if (this.nonScalarAliasesCount > loadingConfig.getMaxAliasesForCollections()) {
+                    throw new YAMLException("Number of aliases for non-scalar nodes exceeds the specified max=" + loadingConfig.getMaxAliasesForCollections());
+                }
             }
-            return result;
-        }
-        NodeEvent event = (NodeEvent) parser.peekEvent();
-        String anchor = null;
-        anchor = event.getAnchor();
-        if (anchor != null && anchors.containsKey(anchor)) {
-            throw new ComposerException("found duplicate anchor " + anchor + "; first occurence",
-                    this.anchors.get(anchor).getStartMark(), "second occurence",
-                    event.getStartMark());
-        }
-        Node node = null;
-        if (parser.checkEvent(Event.ID.Scalar)) {
-            node = composeScalarNode(anchor);
-        } else if (parser.checkEvent(Event.ID.SequenceStart)) {
-            node = composeSequenceNode(anchor);
+            if (recursiveNodes.remove(node)) {
+                node.setTwoStepsConstruction(true);
+            }
         } else {
-            node = composeMappingNode(anchor);
+            NodeEvent event = (NodeEvent) parser.peekEvent();
+            String anchor = null;
+            anchor = event.getAnchor();
+            if (anchor != null && anchors.containsKey(anchor)) {
+                throw new ComposerException("found duplicate anchor " + anchor + "; first occurence",
+                        this.anchors.get(anchor).getStartMark(), "second occurence",
+                        event.getStartMark());
+            }
+            if (parser.checkEvent(Event.ID.Scalar)) {
+                node = composeScalarNode(anchor);
+            } else if (parser.checkEvent(Event.ID.SequenceStart)) {
+                node = composeSequenceNode(anchor);
+            } else {
+                node = composeMappingNode(anchor);
+            }
         }
         recursiveNodes.remove(parent);
         return node;

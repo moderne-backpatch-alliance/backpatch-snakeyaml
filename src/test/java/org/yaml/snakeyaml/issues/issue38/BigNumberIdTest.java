@@ -22,6 +22,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 
 /**
@@ -36,7 +37,9 @@ public class BigNumberIdTest extends TestCase {
             list.add(value);
             list.add(value);
         }
-        Yaml yaml = new Yaml();
+        LoaderOptions options = new LoaderOptions();
+        options.setMaxAliasesForCollections(1500);
+        Yaml yaml = new Yaml(options);
         String output = yaml.dump(list);
         // System.out.println(output);
         //

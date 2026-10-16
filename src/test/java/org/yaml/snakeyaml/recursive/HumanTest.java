@@ -30,11 +30,14 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Util;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.representer.Representer;
+import org.yaml.snakeyaml.resolver.Resolver;
 
 public class HumanTest extends TestCase {
 
@@ -274,12 +277,14 @@ public class HumanTest extends TestCase {
         mother.setChildren(children);
         //
 
-        Constructor constructor = new Constructor(Human2.class);
+        LoaderOptions options = new LoaderOptions();
+        options.setAllowRecursiveKeys(true);
+        Constructor constructor = new Constructor(Human2.class, options);
         TypeDescription humanDescription = new TypeDescription(Human2.class);
         humanDescription.putMapPropertyType("children", Human2.class, String.class);
         constructor.addTypeDescription(humanDescription);
 
-        Yaml yaml = new Yaml(constructor);
+        Yaml yaml = new Yaml(constructor, options, new Representer(), new DumperOptions(), new Resolver());
         String output = yaml.dump(son);
         // System.out.println(output);
         String etalon = Util.getLocalResource("recursive/with-children-2.yaml");

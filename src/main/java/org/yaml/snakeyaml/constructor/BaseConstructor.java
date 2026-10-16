@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.composer.Composer;
 import org.yaml.snakeyaml.composer.ComposerException;
 import org.yaml.snakeyaml.error.YAMLException;
@@ -71,13 +72,20 @@ public abstract class BaseConstructor {
     private PropertyUtils propertyUtils;
     private boolean explicitPropertyUtils;
 
+    protected LoaderOptions loadingConfig;
+
     public BaseConstructor() {
+        this(new LoaderOptions());
+    }
+
+    public BaseConstructor(LoaderOptions loadingConfig) {
         constructedObjects = new HashMap<Node, Object>();
         recursiveObjects = new HashSet<Node>();
         maps2fill = new ArrayList<RecursiveTuple<Map<Object, Object>, RecursiveTuple<Object, Object>>>();
         sets2fill = new ArrayList<RecursiveTuple<Set<Object>, Object>>();
         rootTag = null;
         explicitPropertyUtils = false;
+        this.loadingConfig = loadingConfig;
     }
 
     public void setComposer(Composer composer) {
@@ -325,15 +333,19 @@ public abstract class BaseConstructor {
             }
             Object value = constructObject(valueNode);
             if (keyNode.isTwoStepsConstruction()) {
-                /*
-                 * if keyObject is created it 2 steps we should postpone putting
-                 * it in map because it may have different hash after
-                 * initialization compared to clean just created one. And map of
-                 * course does not observe key hashCode changes.
-                 */
-                maps2fill.add(0,
-                        new RecursiveTuple<Map<Object, Object>, RecursiveTuple<Object, Object>>(
-                                mapping, new RecursiveTuple<Object, Object>(key, value)));
+                if (loadingConfig.getAllowRecursiveKeys()) {
+                    /*
+                     * if keyObject is created it 2 steps we should postpone putting
+                     * it in map because it may have different hash after
+                     * initialization compared to clean just created one. And map of
+                     * course does not observe key hashCode changes.
+                     */
+                    maps2fill.add(0,
+                            new RecursiveTuple<Map<Object, Object>, RecursiveTuple<Object, Object>>(
+                                    mapping, new RecursiveTuple<Object, Object>(key, value)));
+                } else {
+                    throw new YAMLException("Recursive key for mapping is detected but it is not configured to be allowed.");
+                }
             } else {
                 mapping.put(key, value);
             }
