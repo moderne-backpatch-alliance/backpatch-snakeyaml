@@ -50,7 +50,7 @@ public class Resolver {
     protected Map<Character, List<ResolverTuple>> yamlImplicitResolvers = new HashMap<Character, List<ResolverTuple>>();
 
     protected void addImplicitResolvers() {
-        addImplicitResolver(Tag.BOOL, BOOL, "yYnNtTfFoO");
+        addImplicitResolver(Tag.BOOL, BOOL, "yYnNtTfFoO", 10);
         /*
          * INT must be before FLOAT because the regular expression for FLOAT
          * matches INT (see issue 130)
@@ -58,15 +58,13 @@ public class Resolver {
          */
         addImplicitResolver(Tag.INT, INT, "-+0123456789");
         addImplicitResolver(Tag.FLOAT, FLOAT, "-+0123456789.");
-        addImplicitResolver(Tag.MERGE, MERGE, "<");
-        addImplicitResolver(Tag.NULL, NULL, "~nN\0");
-        addImplicitResolver(Tag.NULL, EMPTY, null);
-        addImplicitResolver(Tag.TIMESTAMP, TIMESTAMP, "0123456789");
-        // The following implicit resolver is only for documentation
-        // purposes.
-        // It cannot work
-        // because plain scalars cannot start with '!', '&', or '*'.
-        addImplicitResolver(Tag.YAML, YAML, "!&*");
+        addImplicitResolver(Tag.MERGE, MERGE, "<", 10);
+        addImplicitResolver(Tag.NULL, NULL, "~nN\0", 10);
+        addImplicitResolver(Tag.NULL, EMPTY, null, 10);
+        addImplicitResolver(Tag.TIMESTAMP, TIMESTAMP, "0123456789", 50);
+        // The following implicit resolver is only for documentation purposes.
+        // It cannot work because plain scalars cannot start with '!', '&', or '*'.
+        addImplicitResolver(Tag.YAML, YAML, "!&*", 10);
     }
 
     public Resolver() {
@@ -74,13 +72,16 @@ public class Resolver {
     }
 
     public void addImplicitResolver(Tag tag, Pattern regexp, String first) {
+        addImplicitResolver(tag, regexp, first, 1024);
+    }
+    public void addImplicitResolver(Tag tag, Pattern regexp, String first, int limit) {
         if (first == null) {
             List<ResolverTuple> curr = yamlImplicitResolvers.get(null);
             if (curr == null) {
                 curr = new ArrayList<ResolverTuple>();
                 yamlImplicitResolvers.put(null, curr);
             }
-            curr.add(new ResolverTuple(tag, regexp));
+            curr.add(new ResolverTuple(tag, regexp, limit));
         } else {
             char[] chrs = first.toCharArray();
             for (int i = 0, j = chrs.length; i < j; i++) {
@@ -94,7 +95,7 @@ public class Resolver {
                     curr = new ArrayList<ResolverTuple>();
                     yamlImplicitResolvers.put(theC, curr);
                 }
-                curr.add(new ResolverTuple(tag, regexp));
+                curr.add(new ResolverTuple(tag, regexp, limit));
             }
         }
     }
@@ -111,16 +112,17 @@ public class Resolver {
                 for (ResolverTuple v : resolvers) {
                     Tag tag = v.getTag();
                     Pattern regexp = v.getRegexp();
-                    if (regexp.matcher(value).matches()) {
+                    if (value.length() <= v.getLimit() && regexp.matcher(value).matches()) {
                         return tag;
                     }
                 }
             }
             if (yamlImplicitResolvers.containsKey(null)) {
+                // check null resolver
                 for (ResolverTuple v : yamlImplicitResolvers.get(null)) {
                     Tag tag = v.getTag();
                     Pattern regexp = v.getRegexp();
-                    if (regexp.matcher(value).matches()) {
+                    if (value.length() <= v.getLimit() && regexp.matcher(value).matches()) {
                         return tag;
                     }
                 }
