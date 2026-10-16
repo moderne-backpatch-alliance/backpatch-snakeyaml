@@ -145,7 +145,9 @@ public class HumanGenericsTest extends TestCase {
         mother.setChildren(children);
         //
 
-        Constructor constructor = new Constructor();
+        LoaderOptions options = new LoaderOptions();
+        options.setAllowRecursiveKeys(true);
+        Constructor constructor = new Constructor(options);
         TypeDescription humanDescription = new TypeDescription(HumanGen.class);
         humanDescription.putMapPropertyType("children", HumanGen.class, Object.class);
         constructor.addTypeDescription(humanDescription);
