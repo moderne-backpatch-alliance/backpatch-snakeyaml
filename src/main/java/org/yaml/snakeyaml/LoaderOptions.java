@@ -18,6 +18,8 @@ package org.yaml.snakeyaml;
 public class LoaderOptions {
 
     private boolean allowDuplicateKeys = true;
+    private int maxAliasesForCollections = 50; //to prevent YAML at https://en.wikipedia.org/wiki/Billion_laughs_attack
+    private boolean allowRecursiveKeys;
 
     public boolean isAllowDuplicateKeys() {
         return allowDuplicateKeys;
@@ -42,4 +44,19 @@ public class LoaderOptions {
         this.allowDuplicateKeys = allowDuplicateKeys;
     }
 
+    public int getMaxAliasesForCollections() {
+        return maxAliasesForCollections;
+    }
+
+    public void setMaxAliasesForCollections(int maxAliasesForCollections) {
+    	this.maxAliasesForCollections = maxAliasesForCollections;
+    }
+
+    public void setAllowRecursiveKeys(boolean allowRecursiveKeys) {
+    	this.allowRecursiveKeys = allowRecursiveKeys;
+    }
+
+    public boolean getAllowRecursiveKeys() {
+        return allowRecursiveKeys;
+    }
 }
