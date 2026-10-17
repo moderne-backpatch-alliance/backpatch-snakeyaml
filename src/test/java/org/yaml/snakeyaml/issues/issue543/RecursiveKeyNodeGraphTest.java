@@ -43,7 +43,7 @@ public class RecursiveKeyNodeGraphTest {
     // the Composer marks a node that an alias inside it refers back to
     key.setTwoStepsConstruction(true);
     List<NodeTuple> tuples = new ArrayList<NodeTuple>();
-    tuples.add(new NodeTuple(key, new ScalarNode(Tag.STR, "value", null, null, null)));
+    tuples.add(new NodeTuple(key, new ScalarNode(Tag.STR, "value", null, null, (Character) null)));
     MappingNode mapping = new MappingNode(Tag.MAP, tuples, Boolean.FALSE);
     try {
       new NodeGraphConstructor().construct(mapping);
