@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 1.16.1-backpatch-00002
+release: 1.16.1-backpatch-00003
 baseline: v1.16+backpatch.baseline
 fixes:
   - cve: CVE-2022-1471
@@ -18,12 +18,20 @@ fixes:
     basis: adapted
     artifacts:
       - org.yaml:snakeyaml
-    note: New in this release; adapted onto 1.16; fixed at 1.16.1-backpatch-00002 (backpatch-snakeyaml@722037a).
+    note: Carried from 1.16.1-backpatch-00002.
+  - cve: CVE-2022-25857
+    upstream_fix_url: https://github.com/snakeyaml/snakeyaml/commit/fc300780da21f4bb92c148bc90257201220cf174
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2022-25857
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-snakeyaml/commit/d3f8a45
+    basis: backport
+    artifacts:
+      - org.yaml:snakeyaml
+    note: New in this release; ported onto 1.16; fixed at 1.16.1-backpatch-00003 (backpatch-snakeyaml@d3f8a45).
 tests:
-  commit: 722037aab4df95e3049cc38419d9e2963a552e3d
+  commit: d3f8a458fea188323139f6e4f39924fc8f222b6b
   command: JAVA_HOME=<jdk-7> /bin/bash <alliance>/work/wave2/items/scripts/snakeyaml-jdk7-offline.sh suite <m2>  -Dorg.yaml.snakeyaml.allowGlobalTags=true
   runtime: Azul Zulu (Java 1.7.0_79), Apache Maven 3.6.3, macOS x86_64 under Rosetta 2
-  report: snakeyaml-1.16.1-backpatch-00002-tests.zip
-  report_sha256: abf826d3d9b89b1e5986b47aeefaf73edbc64f9c55895553e5dc7695bf19382e
+  report: snakeyaml-1.16.1-backpatch-00003-tests.zip
+  report_sha256: 2fe4f086d772f2d1e4f05b8a9125521d4ab2b1f9f98ac399fc7bab8d68fdc987
   result: pass
-  note: the full suite at the tested commit, 834 tests run, 0 failed, 0 skipped; the regression tests for CVE-2017-18640 are BigNumberIdTest, BillionLaughsAttackTest, HumanGenericsTest, HumanTest, ReferencesTest
+  note: the full suite at the tested commit, 834 tests run, 0 failed, 0 skipped; the regression tests for CVE-2022-25857 are ReferencesTest
