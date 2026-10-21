@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 1.23.1-backpatch-00002
+release: 1.23.1-backpatch-00003
 baseline: v1.23+backpatch.baseline
 fixes:
   - cve: CVE-2022-1471
@@ -18,12 +18,20 @@ fixes:
     basis: adapted
     artifacts:
       - org.yaml:snakeyaml
-    note: New in this release; adapted onto 1.23; fixed at 1.23.1-backpatch-00002 (backpatch-snakeyaml@2c679ca).
+    note: Carried from 1.23.1-backpatch-00002.
+  - cve: CVE-2022-25857
+    upstream_fix_url: https://github.com/snakeyaml/snakeyaml/commit/fc300780da21f4bb92c148bc90257201220cf174
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2022-25857
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-snakeyaml/commit/e9a8d39
+    basis: backport
+    artifacts:
+      - org.yaml:snakeyaml
+    note: New in this release; ported onto 1.23; fixed at 1.23.1-backpatch-00003 (backpatch-snakeyaml@e9a8d39).
 tests:
-  commit: 2c679ca3f7b134579791d0605b2b2adb862a45b7
+  commit: e9a8d39ef92155145d57c82fcdcbb9859de1a3f0
   command: JAVA_HOME=<jdk-8> /bin/bash <alliance>/work/wave2/items/scripts/snakeyaml-pinned-resources.sh suite <m2>  -Dorg.yaml.snakeyaml.allowGlobalTags=true
   runtime: Azul Zulu (Java 1.8.0_382), Apache Maven 3.9.16, javac of Zulu 7u79, macOS aarch64
-  report: snakeyaml-1.23.1-backpatch-00002-tests.zip
-  report_sha256: ed8f3a147038cfe1c6f934ecf4f4faad27ef928e8837ab507dea9050bb669077
+  report: snakeyaml-1.23.1-backpatch-00003-tests.zip
+  report_sha256: 21b06d807daefadf8215a97474d63264340d47c0dffd362a6e87227f219f1afe
   result: pass
-  note: the full suite at the tested commit, 935 tests run, 0 failed, 1 skipped; the regression tests for CVE-2017-18640 are BigNumberIdTest, BillionLaughsAttackTest, HumanGenericsTest, HumanTest, ReferencesTest
+  note: the full suite at the tested commit, 935 tests run, 0 failed, 1 skipped; the regression tests for CVE-2022-25857 are ReferencesTest
