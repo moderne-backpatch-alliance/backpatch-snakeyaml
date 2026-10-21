@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 1.9.1-backpatch-00002
+release: 1.9.1-backpatch-00003
 baseline: v1.9+backpatch.baseline
 fixes:
   - cve: CVE-2022-1471
@@ -18,12 +18,28 @@ fixes:
     basis: adapted
     artifacts:
       - org.yaml:snakeyaml
-    note: New in this release; adapted onto 1.9; fixed at 1.9.1-backpatch-00002 (backpatch-snakeyaml@4056ac3).
+    note: Carried from 1.9.1-backpatch-00002.
+  - cve: CVE-2022-25857
+    upstream_fix_url: https://github.com/snakeyaml/snakeyaml/commit/fc300780da21f4bb92c148bc90257201220cf174
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2022-25857
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-snakeyaml/compare/ea10a5e~1...a8b2b96
+    basis: backport
+    artifacts:
+      - org.yaml:snakeyaml
+    note: New in this release; ported onto 1.9; fixed at 1.9.1-backpatch-00003 (backpatch-snakeyaml@ea10a5e..a8b2b96).
+  - cve: CVE-2022-38749
+    upstream_fix_url: https://github.com/snakeyaml/snakeyaml/commit/fc300780da21f4bb92c148bc90257201220cf174
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2022-38749
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-snakeyaml/compare/ea10a5e~1...a8b2b96
+    basis: backport
+    artifacts:
+      - org.yaml:snakeyaml
+    note: New in this release; ported onto 1.9; fixed at 1.9.1-backpatch-00003 (backpatch-snakeyaml@ea10a5e..a8b2b96).
 tests:
-  commit: 4056ac37e79a380b1f472ea305d7096883bfc5c5
+  commit: a8b2b96f6e901c26bfa839ced314aecef8988ea7
   command: JAVA_HOME=<jdk-7> /bin/bash <alliance>/work/wave2/items/scripts/snakeyaml-jdk7-offline.sh suite <m2>  -Dorg.yaml.snakeyaml.allowGlobalTags=true
   runtime: Azul Zulu (Java 1.7.0_55), Apache Maven 3.6.3, macOS x86_64 under Rosetta 2
-  report: snakeyaml-1.9.1-backpatch-00002-tests.zip
-  report_sha256: 7bc568e709483d31f736b77b80d25a413520c1d1359cabff1a4ba5ff8fd48c32
+  report: snakeyaml-1.9.1-backpatch-00003-tests.zip
+  report_sha256: 1319a617f87e8fd10ef5e0c1f36af3fc1fcf0b103f63bbcaf963d045cea76c3f
   result: pass
-  note: the full suite at the tested commit, 761 tests run, 0 failed, 0 skipped; the regression tests for CVE-2017-18640 are BigNumberIdTest, BillionLaughsAttackTest, HumanGenericsTest, HumanTest
+  note: the full suite at the tested commit, 763 tests run, 0 failed, 0 skipped; the regression tests for CVE-2022-25857 are FuzzyStackOverflowTest; the regression tests for CVE-2022-38749 are FuzzyStackOverflowTest
