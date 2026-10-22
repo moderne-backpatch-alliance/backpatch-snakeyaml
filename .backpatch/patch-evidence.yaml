@@ -1,0 +1,21 @@
+schema: osera-patch-evidence/0.1.0
+producer: moderne
+release: 1.26.1-backpatch-00001
+baseline: v1.26+backpatch.baseline
+fixes:
+  - cve: CVE-2022-1471
+    upstream_fix_url: https://github.com/snakeyaml/snakeyaml/commit/2b8d47c8bcfd402e7a682b7b2674e8d0cb25e522
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2022-1471
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-snakeyaml/compare/8d2bc9e~1...f1eeddc
+    basis: backport
+    artifacts:
+      - org.yaml:snakeyaml
+    note: New in this release; ported onto 1.26; fixed at 1.26.1-backpatch-00001 (backpatch-snakeyaml@8d2bc9e..f1eeddc).
+tests:
+  commit: f1eeddc33a4a223fc38fee1190b2703637e8bbfc
+  command: JAVA_HOME=<jdk-11> /bin/bash <alliance>/work/wave2/items/scripts/snakeyaml-pinned-resources.sh suite <m2>  -Dorg.yaml.snakeyaml.allowGlobalTags=true -Dmaven.compiler.fork=true -Dmaven.compiler.executable=<sdkman>/java/8.0.382-zulu/bin/javac
+  runtime: Azul Zulu (Java 11.0.20), Apache Maven 3.9.16, javac of Zulu 7u79, macOS aarch64
+  report: snakeyaml-1.26.1-backpatch-00001-tests.zip
+  report_sha256: 54896ad26ea8e1c5dd28f2a5cc362e9dca26e022e17dcbf6d9ce939f0acf0881
+  result: pass
+  note: the full suite at the tested commit, 979 tests run, 0 failed, 1 skipped; the regression tests for CVE-2022-1471 are GlobalTagInspectorGuardTest
