@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 1.29.1-backpatch-00003
+release: 1.29.1-backpatch-00004
 baseline: v1.29+backpatch.baseline
 fixes:
   - cve: CVE-2022-1471
@@ -26,12 +26,20 @@ fixes:
     basis: backport
     artifacts:
       - org.yaml:snakeyaml
-    note: New in this release; ported onto 1.29; fixed at 1.29.1-backpatch-00003 (backpatch-snakeyaml@6b44903..eb5e9d8).
+    note: Carried from 1.29.1-backpatch-00003.
+  - cve: CVE-2022-38751
+    upstream_fix_url: https://github.com/snakeyaml/snakeyaml/commit/f3ab4e0f54c37ddb10f00b71d04187bb0ef1799c
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2022-38751
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-snakeyaml/commit/fb26b1d
+    basis: adapted
+    artifacts:
+      - org.yaml:snakeyaml
+    note: New in this release; adapted onto 1.29; fixed at 1.29.1-backpatch-00004 (backpatch-snakeyaml@fb26b1d).
 tests:
-  commit: eb5e9d80c04bdf508618a65c54ddeee0a244461a
+  commit: fb26b1daa640a745332bb719c934a1292839c97f
   command: JAVA_HOME=<jdk-11> /bin/bash <alliance>/work/wave2/items/scripts/maven-forked-javac.sh suite <m2>  <alliance>/work/wave2/items/scripts/zulu7u79-javac.sh -Dorg.yaml.snakeyaml.allowGlobalTags=true
   runtime: Azul Zulu (Java 11.0.20), Apache Maven 3.9.16, javac of Zulu 7u79, macOS aarch64
-  report: snakeyaml-1.29.1-backpatch-00003-tests.zip
-  report_sha256: c3db8f803cf51774ea095211421318da034cb3f18750d3092b1e9665e08c182b
+  report: snakeyaml-1.29.1-backpatch-00004-tests.zip
+  report_sha256: 5c44c8ee2c9004b965aa8dc8f5fb84880d5c595f1202293e1db55dcb9d58c986
   result: pass
-  note: the full suite at the tested commit, 1072 tests run, 0 failed, 1 skipped; the regression tests for CVE-2022-38749 are FuzzyStackOverflowTest, ReferencesTest
+  note: the full suite at the tested commit, 1073 tests run, 0 failed, 1 skipped; the regression tests for CVE-2022-38751 are Fuzzy47039Test, ResolverTupleTest
