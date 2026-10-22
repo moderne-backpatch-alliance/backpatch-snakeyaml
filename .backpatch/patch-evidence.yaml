@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 1.28.1-backpatch-00005
+release: 1.28.1-backpatch-00006
 baseline: v1.28+backpatch.baseline
 fixes:
   - cve: CVE-2022-1471
@@ -42,12 +42,20 @@ fixes:
     basis: adapted
     artifacts:
       - org.yaml:snakeyaml
-    note: New in this release; adapted onto 1.28; fixed at 1.28.1-backpatch-00005 (backpatch-snakeyaml@bb89800).
+    note: Carried from 1.28.1-backpatch-00005.
+  - cve: CVE-2022-41854
+    upstream_fix_url: https://github.com/snakeyaml/snakeyaml/commit/5056a448f09c46250346c338e821386caa751182
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2022-41854
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-snakeyaml/compare/bb89800~1...9f07525
+    basis: adapted
+    artifacts:
+      - org.yaml:snakeyaml
+    note: New in this release; adapted onto 1.28; fixed at 1.28.1-backpatch-00006 (backpatch-snakeyaml@bb89800..9f07525).
 tests:
-  commit: bb898006a664e12ce7ae3975e77ac59890746f63
+  commit: 9f075252431ca072f9a9699e47f76658fef6abaf
   command: JAVA_HOME=<jdk-11> /bin/bash <alliance>/work/wave2/items/scripts/maven-forked-javac.sh suite <m2>  <alliance>/work/wave2/items/scripts/zulu7u79-javac.sh -Dorg.yaml.snakeyaml.allowGlobalTags=true
   runtime: Azul Zulu (Java 11.0.20), Apache Maven 3.9.16, javac of Zulu 7u79, macOS aarch64
-  report: snakeyaml-1.28.1-backpatch-00005-tests.zip
-  report_sha256: d97a5a4c04f1fc7043c42493b2b8cc1d536da53bf59b8937c529858bbe21ca8a
+  report: snakeyaml-1.28.1-backpatch-00006-tests.zip
+  report_sha256: b016898d925fb4f5a4c698e7f5bb92398758130e018106df1745fee47bf3aca5
   result: pass
-  note: the full suite at the tested commit, 1067 tests run, 0 failed, 1 skipped; the regression tests for CVE-2022-38752 are Fuzzy47081Test, HumanGenericsTest, HumanTest, RecursiveSetTest, RecursiveSortedSetTest
+  note: the full suite at the tested commit, 1068 tests run, 0 failed, 1 skipped; the regression tests for CVE-2022-41854 are Fuzzer50355Test, Fuzzy47081Test, HumanGenericsTest, HumanTest, RecursiveSetTest, RecursiveSortedSetTest
