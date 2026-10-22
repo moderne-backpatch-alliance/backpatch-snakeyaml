@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 1.26.1-backpatch-00005
+release: 1.26.1-backpatch-00006
 baseline: v1.26+backpatch.baseline
 fixes:
   - cve: CVE-2022-1471
@@ -42,12 +42,20 @@ fixes:
     basis: adapted
     artifacts:
       - org.yaml:snakeyaml
-    note: New in this release; adapted onto 1.26; fixed at 1.26.1-backpatch-00005 (backpatch-snakeyaml@dfa8818).
+    note: Carried from 1.26.1-backpatch-00005.
+  - cve: CVE-2022-41854
+    upstream_fix_url: https://github.com/snakeyaml/snakeyaml/commit/5056a448f09c46250346c338e821386caa751182
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2022-41854
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-snakeyaml/compare/dfa8818~1...2740206
+    basis: adapted
+    artifacts:
+      - org.yaml:snakeyaml
+    note: New in this release; adapted onto 1.26; fixed at 1.26.1-backpatch-00006 (backpatch-snakeyaml@dfa8818..2740206).
 tests:
-  commit: dfa881825244d600c275057574ca648143b5fd13
+  commit: 2740206c81492f6180130e89a9e612c34eb2064f
   command: JAVA_HOME=<jdk-11> /bin/bash <alliance>/work/wave2/items/scripts/snakeyaml-pinned-resources.sh suite <m2>  -Dorg.yaml.snakeyaml.allowGlobalTags=true -Dmaven.compiler.fork=true -Dmaven.compiler.executable=<sdkman>/java/8.0.382-zulu/bin/javac
   runtime: Azul Zulu (Java 11.0.20), Apache Maven 3.9.16, javac of Zulu 7u79, macOS aarch64
-  report: snakeyaml-1.26.1-backpatch-00005-tests.zip
-  report_sha256: ed829886d575e31a395b7317533360c01d6f2c6599af940bdf768cb4a8168ca7
+  report: snakeyaml-1.26.1-backpatch-00006-tests.zip
+  report_sha256: 82d6354c3dc1478684489d88e348ad08aeac3bd6871090314be5e3cea3b9a099
   result: pass
-  note: the full suite at the tested commit, 985 tests run, 0 failed, 1 skipped; the regression tests for CVE-2022-38752 are Fuzzy47081Test, HumanGenericsTest, HumanTest, RecursiveSetTest, RecursiveSortedSetTest
+  note: the full suite at the tested commit, 986 tests run, 0 failed, 1 skipped; the regression tests for CVE-2022-41854 are Fuzzer50355Test, Fuzzy47081Test, HumanGenericsTest, HumanTest, RecursiveSetTest, RecursiveSortedSetTest
