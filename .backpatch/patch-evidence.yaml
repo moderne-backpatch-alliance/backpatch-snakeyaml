@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 1.26.1-backpatch-00006
+release: 1.26.1-backpatch-00007
 baseline: v1.26+backpatch.baseline
 fixes:
   - cve: CVE-2022-1471
@@ -10,7 +10,7 @@ fixes:
     basis: backport
     artifacts:
       - org.yaml:snakeyaml
-    note: Carried from 1.26.1-backpatch-00001.
+    note: Carried from 1.26.1-backpatch-00001; ported onto 1.26; fixed at 1.26.1-backpatch-00001 (backpatch-snakeyaml@8d2bc9e..f1eeddc).
   - cve: CVE-2022-25857
     upstream_fix_url: https://github.com/snakeyaml/snakeyaml/commit/fc300780da21f4bb92c148bc90257201220cf174
     advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2022-25857
@@ -18,7 +18,7 @@ fixes:
     basis: backport
     artifacts:
       - org.yaml:snakeyaml
-    note: Carried from 1.26.1-backpatch-00002.
+    note: Carried from 1.26.1-backpatch-00002; ported onto 1.26; fixed at 1.26.1-backpatch-00002 (backpatch-snakeyaml@a7b415d).
   - cve: CVE-2022-38749
     upstream_fix_url: https://github.com/snakeyaml/snakeyaml/commit/fc300780da21f4bb92c148bc90257201220cf174
     advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2022-38749
@@ -26,7 +26,7 @@ fixes:
     basis: backport
     artifacts:
       - org.yaml:snakeyaml
-    note: Carried from 1.26.1-backpatch-00003.
+    note: Carried from 1.26.1-backpatch-00003; ported onto 1.26; fixed at 1.26.1-backpatch-00003 (backpatch-snakeyaml@a7b415d..57b3b6f).
   - cve: CVE-2022-38751
     upstream_fix_url: https://github.com/snakeyaml/snakeyaml/commit/f3ab4e0f54c37ddb10f00b71d04187bb0ef1799c
     advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2022-38751
@@ -34,7 +34,7 @@ fixes:
     basis: adapted
     artifacts:
       - org.yaml:snakeyaml
-    note: Carried from 1.26.1-backpatch-00004.
+    note: Carried from 1.26.1-backpatch-00004; ported onto 1.26; fixed at 1.26.1-backpatch-00004 (backpatch-snakeyaml@974b324).
   - cve: CVE-2022-38752
     upstream_fix_url: https://github.com/snakeyaml/snakeyaml/commit/5056a448f09c46250346c338e821386caa751182
     advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2022-38752
@@ -42,7 +42,7 @@ fixes:
     basis: adapted
     artifacts:
       - org.yaml:snakeyaml
-    note: Carried from 1.26.1-backpatch-00005.
+    note: Carried from 1.26.1-backpatch-00005; ported onto 1.26; fixed at 1.26.1-backpatch-00005 (backpatch-snakeyaml@dfa8818).
   - cve: CVE-2022-41854
     upstream_fix_url: https://github.com/snakeyaml/snakeyaml/commit/5056a448f09c46250346c338e821386caa751182
     advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2022-41854
@@ -50,12 +50,11 @@ fixes:
     basis: adapted
     artifacts:
       - org.yaml:snakeyaml
-    note: New in this release; adapted onto 1.26; fixed at 1.26.1-backpatch-00006 (backpatch-snakeyaml@dfa8818..2740206).
+    note: Carried from 1.26.1-backpatch-00006; ported onto 1.26; fixed at 1.26.1-backpatch-00006 (backpatch-snakeyaml@dfa8818..2740206).
 tests:
-  commit: 2740206c81492f6180130e89a9e612c34eb2064f
-  command: JAVA_HOME=<jdk-11> /bin/bash <alliance>/work/wave2/items/scripts/snakeyaml-pinned-resources.sh suite <m2>  -Dorg.yaml.snakeyaml.allowGlobalTags=true -Dmaven.compiler.fork=true -Dmaven.compiler.executable=<sdkman>/java/8.0.382-zulu/bin/javac
-  runtime: Azul Zulu (Java 11.0.20), Apache Maven 3.9.16, javac of Zulu 7u79, macOS aarch64
-  report: snakeyaml-1.26.1-backpatch-00006-tests.zip
-  report_sha256: 82d6354c3dc1478684489d88e348ad08aeac3bd6871090314be5e3cea3b9a099
+  commit: f18670500e3b40ffb0e3d665d00fd6abeddd1f3c
+  command: none in this repository
+  runtime: none, no build or test ran for this release
+  report: carried, see the evidence of the release named in the note
   result: pass
-  note: the full suite at the tested commit, 986 tests run, 0 failed, 1 skipped; the regression tests for CVE-2022-41854 are Fuzzer50355Test, Fuzzy47081Test, HumanGenericsTest, HumanTest, RecursiveSetTest, RecursiveSortedSetTest
+  note: "this release is a tooling update, it carries no new fix, nothing ran here; its test provenance is tooling-2026-11-03-snakeyaml-1.26: a tooling update of moderne-backpatch-alliance/backpatch-snakeyaml at v1.26.1-backpatch-00006, whose .backpatch/patch-evidence.yaml says what ran"
